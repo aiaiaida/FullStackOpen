@@ -2,9 +2,10 @@ import { useState } from 'react'
 
 const StatisticLine = ({text,value}) => {
   return (
-    <div>
-      <p>{text} {value}</p>
-    </div>
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
   )
 }
 
@@ -21,23 +22,21 @@ const Statistic = ({good,neutral,bad}) => {
   else{
     const percentage = ((good+neutral)/(good+neutral+bad)).toLocaleString('en',{style: 'percent'})
     return (
-      <div>
+      <table>
         <StatisticLine text='good' value={good}></StatisticLine>
         <StatisticLine text='neutral' value={neutral}></StatisticLine>
         <StatisticLine text='bad' value={bad}></StatisticLine>
         <StatisticLine text='all' value={good+neutral+bad}></StatisticLine>
         <StatisticLine text='average' value={(good-bad)/(good+neutral+bad)}></StatisticLine>
         <StatisticLine text='positive' value={percentage}></StatisticLine>
-      </div>
+      </table>
     )
   }
 }
 
 const Button = ({handleClick,text}) => {
   return (
-    <div>
-      <button onClick={handleClick}>{text}</button>
-    </div>
+    <button onClick={handleClick}>{text}</button>
   )
 }
 

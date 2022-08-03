@@ -12,7 +12,6 @@ const StatisticLine = ({text,value}) => {
 const Statistic = ({good,neutral,bad}) => {
   if (good+bad+neutral===0)
   {
-    console.log("hi")
     return (
       <div>
         <h2>No feedback given</h2>

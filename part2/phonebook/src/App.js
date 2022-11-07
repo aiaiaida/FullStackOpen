@@ -49,7 +49,20 @@ const App = () => {
       })
     }
     else{
-      alert(`${newName} already exists`)
+      const personExist = persons.find(p=> p.name === newName)
+      let answer = window.confirm(`${newName} already exists, replace the old number with the new one?`)
+      if (answer) {
+        const newOne= {
+          name:newName,
+          number: newNum
+        }
+        axiosService.updatePerson(personExist.id,newOne)
+        .then(returned => {
+          setPersons(persons.map(p => p.id !== personExist.id ? p : returned))
+          setNewName('')
+          setNewNum('')
+        })
+      }
     }
   }
   

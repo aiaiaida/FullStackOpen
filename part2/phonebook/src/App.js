@@ -3,7 +3,6 @@ import Search from './components/Search'
 import Form from './components/Form'
 import Persons from './components/Persons'
 import axiosService from './services/people'
-import axios from 'axios'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 

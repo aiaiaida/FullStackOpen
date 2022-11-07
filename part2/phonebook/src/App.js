@@ -66,11 +66,18 @@ const App = () => {
         .then(returned => {
           setErrorMessage(`${newName}'s number is changed`)
           setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
+            setErrorMessage(null)
+          }, 5000)
           setPersons(persons.map(p => p.id !== personExist.id ? p : returned))
           setNewName('')
           setNewNum('')
+        })
+        .catch(error => {
+          setErrorMessage(`${personExist.name} has already been removed`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+          setPersons(persons.filter(p => p.id !== personExist.id))
         })
       }
     }

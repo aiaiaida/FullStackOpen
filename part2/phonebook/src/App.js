@@ -3,12 +3,14 @@ import Search from './components/Search'
 import Form from './components/Form'
 import Persons from './components/Persons'
 import axiosService from './services/people'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNum,setNewNum] = useState('')
   const [newSearch,setNewSearch] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(()=> {
     axiosService.getAll()
@@ -43,6 +45,10 @@ const App = () => {
       }
       axiosService.postNew(newPerson)
       .then (newData => {
+        setErrorMessage(`${newName} added`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
         setPersons(persons.concat(newData))
         setNewName('')
         setNewNum('')
@@ -58,6 +64,10 @@ const App = () => {
         }
         axiosService.updatePerson(personExist.id,newOne)
         .then(returned => {
+          setErrorMessage(`${newName}'s number is changed`)
+          setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
           setPersons(persons.map(p => p.id !== personExist.id ? p : returned))
           setNewName('')
           setNewNum('')
@@ -70,11 +80,12 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Search newSearch={newSearch} handleSearch={handleSearch}></Search>
+      <Notification message={errorMessage}/>
+      <Search newSearch={newSearch} handleSearch={handleSearch} />
       <h2>Add a new</h2>
       <Form addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNum={newNum} handleNumChange={handleNumChange}></Form>
       <h2>Numbers</h2>
-      <Persons personToShow={personToShow}></Persons>
+      <Persons personToShow={personToShow} />
     </div>
   )
 }

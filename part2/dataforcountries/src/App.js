@@ -7,11 +7,13 @@ function App() {
 
   const [allCountries, setAllCountries] = useState('')
   const [search, setSearch] = useState('')
-  useEffect(()=>{
-    axios.get('https://restcountries.com/v2/all') 
-        .then(res=>setAllCountries(res))
-        console.log(allCountries)
-  })
+  
+  useEffect(()=> {
+    axios.get('https://restcountries.com/v2/all')
+    .then((response) => {
+      setAllCountries(response.data)
+    })
+  },[])
 
   const handleSearch = (event) => {
     event.preventDefault()

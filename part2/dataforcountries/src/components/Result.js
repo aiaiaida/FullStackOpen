@@ -1,14 +1,7 @@
 import CountryInfo from "./CountryInfo"
 const Result = ({search, allCountries}) => {
     const results = Object.values(allCountries).filter(c=>c.name.toLowerCase().includes(search))
-    console.log(allCountries)
-    // function handleShow (c) {
-    //     return(
-    //         <div>
-    //             {/* <CountryInfo result={c}></CountryInfo> */}
-    //         </div>
-    //     )
-    // }
+    console.log('type',typeof(results))
     
     if (results.length > 10){
         return (
@@ -23,7 +16,6 @@ const Result = ({search, allCountries}) => {
                 {results.map(c=> (
                     <div>
                     <p>{c.name}</p>
-                    {/* <button onClick={handleShow(c)}>show</button> */}
                     </div>
                 ))}
             </div>
@@ -32,7 +24,7 @@ const Result = ({search, allCountries}) => {
     else{
         return(
         <div>
-            {/* <CountryInfo result={results[0]}></CountryInfo> */}
+            <CountryInfo results={results}></CountryInfo>
         </div>
         )
     }

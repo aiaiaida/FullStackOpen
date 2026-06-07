@@ -33,10 +33,12 @@ app.get("/info", (request, response) => {
     </div>`)
 })
 
+// get all persons
 app.get("/api/persons/", (request, response) => {
     response.json(persons)
 })
 
+// get a single person
 app.get("/api/persons/:id", (request, response) => {
     const id = request.params.id
     const person = persons.find(p => p.id === id)

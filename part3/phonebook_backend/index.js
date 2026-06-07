@@ -68,10 +68,11 @@ const generateID = () => {
 // add a new person
 app.post("/api/persons/", (request, response) => {
     body = request.body
-    if (!body.name) {
-        console.log("no content")
+    const nameExists = persons.some(p => p.name === body.name)
+    if (!body.name || !body.number || nameExists ) {
+        console.log("no name or no number, or name exists")
         return response.status(400).json({
-            error: "missing content"
+            error: "missing name, or missing number, or name exists"
         })
     }
     const person = {

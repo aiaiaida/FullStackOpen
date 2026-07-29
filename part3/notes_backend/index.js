@@ -33,11 +33,6 @@ app.delete('/api/notes/:id', (request, response) => {
     response.status(204).end()
 })
 
-const generateID = () => {
-    const maxID = notes.length > 0 ? Math.max(...notes.map(note => Number(note.id))):0
-    return String(maxID+1)
-}
-
 app.post('/api/notes/', (request,response) => {
     const body = request.body
     

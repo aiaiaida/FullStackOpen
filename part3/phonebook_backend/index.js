@@ -15,28 +15,7 @@ app.use(morgan(':method :url :status :response-time ms :body'))
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'build')))
 
-let persons = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
+let persons = []
 
 app.get("/info", (request, response) => {
     const amount = persons.length
@@ -86,14 +65,13 @@ app.post("/api/persons/", (request, response) => {
             error: "name exists"
         })
     }
-    const person = {
-        "name": body.name,
-        "number": body.number || "0",
-        "id": generateID()
-    }
-
-    persons = persons.concat(person)
-    response.json(person)
+    const person = new Person({
+        name: body.name,
+        number: body.number
+    })
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 })
 
 const PORT =  process.env.PORT

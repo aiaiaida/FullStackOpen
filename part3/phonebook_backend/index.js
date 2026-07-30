@@ -18,12 +18,13 @@ app.use(express.static(path.join(__dirname, 'build')))
 let persons = []
 
 app.get("/info", (request, response) => {
-    const amount = Person.find({}).then(persons => persons.length)
-    const time = new Date()
-    response.send(`<div>
-        <p>Phonebook has info for ${amount} people</p>
-        <p>${time}</p>
+    Person.countDocuments({}).then(count => {
+        response.send(`<div>
+        <p>Phonebook has info for ${count} people</p>
+        <p>${new Date()}</p>
     </div>`)
+    })
+    .catch(error => next(error))
 })
 
 // get all persons

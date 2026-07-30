@@ -21,6 +21,24 @@ app.get('/api/notes', (request, response) => {
     })
 })
 
+// add a new note
+app.post('/api/notes', (request, response) => {
+  const body = request.body
+
+  if (!body.content) {
+    return response.status(400).json({ error: 'content missing' })
+  }
+
+  const note = new Note({
+    content: body.content,
+    important: body.important || false,
+  })
+
+  note.save().then((savedNote) => {
+    response.json(savedNote)
+  })
+})
+
 // one note by id
 app.get('/api/notes/:id', (request,response, next) => {
     const id = request.params.id

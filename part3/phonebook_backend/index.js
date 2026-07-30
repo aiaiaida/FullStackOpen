@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'build')))
 let persons = []
 
 app.get("/info", (request, response) => {
-    const amount = persons.length
+    const amount = Person.find({}).then(persons => persons.length)
     const time = new Date()
     response.send(`<div>
         <p>Phonebook has info for ${amount} people</p>
@@ -54,7 +54,6 @@ app.delete("/api/persons/:id", (request, response, next) => {
 // add a new person
 app.post("/api/persons/", (request, response) => {
     const body = request.body
-    const nameExists = persons.some(p => p.name.toLowerCase() === body.name.toLowerCase())
     if (!body.name) {
         return response.status(400).json({
             error: "missing name"
@@ -62,10 +61,6 @@ app.post("/api/persons/", (request, response) => {
     } else if (!body.number) {
          return response.status(400).json({
             error: "missing number"
-        })
-    } else if (nameExists) {
-         return response.status(400).json({
-            error: "name exists"
         })
     }
     const person = new Person({
@@ -75,6 +70,23 @@ app.post("/api/persons/", (request, response) => {
     person.save().then(savedPerson => {
         response.json(savedPerson)
     })
+})
+
+// update an existing
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+    const {name, number} = body
+    Person.findById(request.params.id).then(person => {
+        if (!person) {
+            return response.status(404).end()
+        }
+        person.name = name
+        person.number = number
+        return person.save().then(savedPerson => {
+            response.json(savedPerson)
+        })
+    })
+    .catch(error => next(error))
 })
 
 // error handler

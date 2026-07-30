@@ -39,13 +39,18 @@ app.get("/api/persons/:id", (request, response) => {
     Person.findById(id).then(returnedPerson => {
         response.json(returnedPerson)
     })
+    .catch(error => {
+        console.log(error)
+        response.status(500).end()
+    })
 })
 
 // delete a person
 app.delete("/api/persons/:id", (request, response) => {
     const id = request.params.id
-    persons = persons.filter(person => person.id !== id)
-    response.status(204).end()
+    Person.findByIdAndDelete(id).then(res => {
+        response.status(204).end()
+    })
 })
 
 // add a new person

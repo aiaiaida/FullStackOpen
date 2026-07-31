@@ -1,24 +1,21 @@
 require('dotenv').config()
 const express = require('express')
-const note = require('./models/note')
 const app = express()
-const Note = require(('./models/note'))
+const Note = require('./models/note')
 
 app.use(express.json())
 app.use(express.static('dist'))
 
-let notes = []
-
 // info
 app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
+  response.send('<h1>Hello World!</h1>')
 })
 
 // all notes
 app.get('/api/notes', (request, response) => {
-    Note.find({}).then(notes => {
-        response.json(notes)
-    })
+  Note.find({}).then(notes => {
+    response.json(notes)
+  })
 })
 
 // add a new note
@@ -37,47 +34,47 @@ app.post('/api/notes', (request, response, next) => {
   note.save().then((savedNote) => {
     response.json(savedNote)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 // one note by id
 app.get('/api/notes/:id', (request,response, next) => {
-    const id = request.params.id
-    Note.findById(id).then(note => {
-        if (note) {
-            response.json(note)
-        } else {
-            response.status(404).end()
-        }
-    })
+  const id = request.params.id
+  Note.findById(id).then(note => {
+    if (note) {
+      response.json(note)
+    } else {
+      response.status(404).end()
+    }
+  })
     .catch(error => {next(error)})
 })
 
 // delete one note by id
 app.delete('/api/notes/:id', (request, response, next) => {
-    const id = request.params.id
-    Note.findByIdAndDelete(id).then(res => {
-        response.status(204).end()
-    })
+  const id = request.params.id
+  Note.findByIdAndDelete(id).then(() => {
+    response.status(204).end()
+  })
     .catch(error => next(error))
 })
 
 // update a note
 app.put('api/note/:id', (request, response, next) => {
-    const {content, important} = request.body
+  const { content, important } = request.body
 
-    Note.findById(request.params.id).then(returnedNote => {
-        if (!returnedNote) {
-            return response.status(404).end()
-        }
+  Note.findById(request.params.id).then(returnedNote => {
+    if (!returnedNote) {
+      return response.status(404).end()
+    }
 
-        returnedNote.content = content
-        returnedNote.important = important
+    returnedNote.content = content
+    returnedNote.important = important
 
-        return returnedNote.save().then(updated => {
-            response.json(updated)
-        })
+    return returnedNote.save().then(updated => {
+      response.json(updated)
     })
+  })
     .catch(error => next(error))
 })
 
@@ -105,5 +102,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
-    console.log(`server is running on port ${PORT}`)
+  console.log(`server is running on port ${PORT}`)
 })

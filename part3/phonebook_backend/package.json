@@ -11,7 +11,8 @@
     "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ../phonebook && npm run build && cp -r build ../phonebook_backend",
-    "deploy:full": "npm run build:ui && git add . && git commit -m deployfulltest && git push"
+    "deploy:full": "npm run build:ui && git add . && git commit -m deployfulltest && git push",
+    "lint": "eslint ."
   },
   "dependencies": {
     "cors": "^2.8.6",
@@ -19,5 +20,11 @@
     "express": "^5.2.1",
     "mongoose": "^9.8.1",
     "morgan": "^1.11.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "eslint": "^9.39.5",
+    "globals": "^17.8.0"
   }
 }

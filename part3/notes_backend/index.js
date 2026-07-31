@@ -22,7 +22,7 @@ app.get('/api/notes', (request, response) => {
 })
 
 // add a new note
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
   const body = request.body
 
   if (!body.content) {
@@ -37,6 +37,7 @@ app.post('/api/notes', (request, response) => {
   note.save().then((savedNote) => {
     response.json(savedNote)
   })
+  .catch(error => next(error))
 })
 
 // one note by id
@@ -93,7 +94,9 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message})
+  }
 
   next(error)
 }

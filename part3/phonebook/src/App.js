@@ -53,6 +53,13 @@ const App = () => {
         setNewName('')
         setNewNum('')
       })
+      .catch(error => {
+        const message = error.response?.data?.error || 'Something went wrong'
+        setErrorMessage(message)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+})
     }
     else{
       const personExist = persons.find(p=> p.name === newName)

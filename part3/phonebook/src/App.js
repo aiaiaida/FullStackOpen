@@ -48,7 +48,7 @@ const App = () => {
         setErrorMessage(`${newName} added`)
         setTimeout(() => {
           setErrorMessage(null)
-        }, 5000)
+        }, 10000)
         setPersons(persons.concat(newData))
         setNewName('')
         setNewNum('')
@@ -58,7 +58,7 @@ const App = () => {
         setErrorMessage(message)
         setTimeout(() => {
           setErrorMessage(null)
-        }, 5000)
+        }, 10000)
 })
     }
     else{
@@ -74,7 +74,7 @@ const App = () => {
           setErrorMessage(`${newName}'s number is changed`)
           setTimeout(() => {
             setErrorMessage(null)
-          }, 5000)
+          }, 10000)
           setPersons(persons.map(p => p.id !== personExist.id ? p : returned))
           setNewName('')
           setNewNum('')
@@ -84,7 +84,7 @@ const App = () => {
           setErrorMessage(message)
           setTimeout(() => {
             setErrorMessage(null)
-          }, 5000)
+          }, 10000)
           setPersons(persons.filter(p => p.id !== personExist.id))
         })
       }

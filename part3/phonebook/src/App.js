@@ -80,7 +80,8 @@ const App = () => {
           setNewNum('')
         })
         .catch(error => {
-          setErrorMessage(`${personExist.name} has already been removed`)
+          const message = error.response?.data?.error || 'Something went wrong'
+          setErrorMessage(message)
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000)

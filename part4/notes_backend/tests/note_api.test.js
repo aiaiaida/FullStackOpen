@@ -8,7 +8,6 @@ const Note = require('../models/note')
 
 const api = supertest(app)
 
-
 beforeEach(async () => {
   await Note.deleteMany({})
 

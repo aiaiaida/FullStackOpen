@@ -2,27 +2,24 @@ const notesRouter = require('express').Router()
 const Note = require('../models/note')
 
 // all notes
-notesRouter.get('/', (request, response) => {
-  Note.find({}).then(notes => {
-    response.json(notes)
-  })
+notesRouter.get('/', async (request, response ) => {
+  const notes = await Note.find({})
+  response.json(notes)
 })
 
 // one note by id
-notesRouter.get('/:id', (request,response, next) => {
+notesRouter.get('/:id', async (request,response) => {
   const id = request.params.id
-  Note.findById(id).then(note => {
-    if (note) {
-      response.json(note)
-    } else {
-      response.status(404).end()
-    }
-  })
-    .catch(error => {next(error)})
+  const noteFound = await Note.findById(id)
+  if (noteFound) {
+    response.json(noteFound)
+  } else {
+    response.status(404).end()
+  }
 })
 
 // add a new note
-notesRouter.post('/', (request, response, next) => {
+notesRouter.post('/', async (request, response) => {
   const body = request.body
 
   if (!body.content) {
@@ -34,19 +31,15 @@ notesRouter.post('/', (request, response, next) => {
     important: body.important || false,
   })
 
-  note.save().then((savedNote) => {
-    response.json(savedNote)
-  })
-    .catch(error => next(error))
+  const savedNote = await note.save()
+  response.status(201).json(savedNote)
 })
 
 // delete one note by id
-notesRouter.delete('/:id', (request, response, next) => {
+notesRouter.delete('/:id', async (request, response) => {
   const id = request.params.id
-  Note.findByIdAndDelete(id).then(() => {
-    response.status(204).end()
-  })
-    .catch(error => next(error))
+  await Note.findByIdAndDelete(id)
+  response.status(204).end()
 })
 
 // update a note

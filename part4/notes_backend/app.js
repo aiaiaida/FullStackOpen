@@ -22,9 +22,9 @@ app.use(express.json())
 app.use(express.static('dist'))
 app.use(middleware.requestLogger)
 
-app.use('api/notes', notesRouter)
+app.use('/api/notes', notesRouter)
 
-app.use(middleware.unkownEndpoint)
+app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 
 module.exports = app

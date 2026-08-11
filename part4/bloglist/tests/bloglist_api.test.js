@@ -90,6 +90,19 @@ test('400 if no url', async () => {
     .expect(400)
 })
 
+test('delete one by id', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api.delete(`/api/blogs/${blogToDelete.id}`)
+
+  const blogsAfterDeletion = await helper.blogsInDb()
+  const ids = blogsAfterDeletion.map(blog => blog.id)
+  assert(!ids.includes(blogToDelete.id))
+
+  assert.strictEqual(blogsAfterDeletion.length, blogsAtStart.length - 1)
+})
+
 after (async () => {
   await mongoose.connection.close()
 })

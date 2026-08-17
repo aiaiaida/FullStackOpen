@@ -1,10 +1,12 @@
 const assert = require('node:assert')
-const { test, after, beforeEach } = require('node:test')
+const { describe, test, after, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const helper = require('./test_helper')
+const bcrypt = require('bcrypt')
+const User = require('../models/user')
 
 const api = supertest(app)
 
@@ -119,6 +121,79 @@ test('likes of a blog is updated', async () => {
     .expect('Content-Type', /application\/json/)
   
   assert.strictEqual(updated.body.likes, 50)
+})
+
+describe('When there is one user in db initially', async () => {
+  beforeEach(async () => {
+    await User.deleteMany()
+
+    const passwordHash = await bcrypt.hash('SEKRET', 10)
+    const user = new User({ username: 'root', passwordHash})
+
+    await user.save()
+  })
+
+  test('Valid user is created successfully', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'Aada xoxo',
+      password: 'Salaisuus',
+      name: 'AADA'
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
+
+    const usernames = usersAtEnd.map(u => u.username)
+    assert(usernames.includes(newUser.username))
+  })
+
+  test('Too short username fails with 400 and error message', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'Aa',
+      password: 'Salaisuus',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    assert(result.body.error.includes('username must be at least 3 characters long'))
+    
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+
+  test('Too short password fails with 400 and error message', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'Aadddda',
+      password: 's',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    assert(result.body.error.includes('password is required and at least 3 characters long'))
+    
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
 })
 
 after (async () => {

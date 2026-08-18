@@ -9,11 +9,27 @@ const bcrypt = require('bcrypt')
 const User = require('../models/user')
 
 const api = supertest(app)
+let token
 
 beforeEach(async() => {
   await Blog.deleteMany()
+  await User.deleteMany()
 
-  const blogObjs = helper.initialBlogs.map(blog => new Blog(blog))
+  const user = new User({
+    username: 'root',
+    name: "root user",
+    passwordHash: await bcrypt.hash('password', 10)
+  })
+
+  await user.save()
+
+  const response = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'password' })
+
+  token = response.body.token
+
+  const blogObjs = helper.initialBlogs.map(blog => new Blog({ ...blog, user: user._id }))
   const promiseArray = blogObjs.map(blog => blog.save())
   await Promise.all(promiseArray)
 })
@@ -40,6 +56,7 @@ test('POSTing a new blog works', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -59,6 +76,7 @@ test('if no likes property, default to 0', async () => {
   
   const response = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(blogWithouLikes)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -75,6 +93,7 @@ test('400 if no title', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(blogWithoutTile)
     .expect(400)
 })
@@ -88,15 +107,35 @@ test('400 if no url', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(blogWithoutUrl)
     .expect(400)
+})
+
+test('401 if no token', async () => {
+  const newBlog = {
+    title: 'a new blog should be added',
+    author: 'aaaaa',
+    url: 'sss.ss',
+    likes: 5
+  }
+
+  const result = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(401)
+  
+  assert(result.body.error.includes('token invalid'))
 })
 
 test('delete one by id', async () => {
   const blogsAtStart = await helper.blogsInDb()
   const blogToDelete = blogsAtStart[0]
 
-  await api.delete(`/api/blogs/${blogToDelete.id}`)
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .set('Authorization', `Bearer ${token}`)
+    .expect(204)
 
   const blogsAfterDeletion = await helper.blogsInDb()
   const ids = blogsAfterDeletion.map(blog => blog.id)

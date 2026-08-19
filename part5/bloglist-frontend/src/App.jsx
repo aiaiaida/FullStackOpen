@@ -6,7 +6,7 @@ import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -39,9 +39,9 @@ const App = () => {
       setPassword('')
       setUsername('')
     } catch {
-      setErrorMessage('wrong credentials')
+      setMessage({text:'wrong credentials', type: 'error'})
       setTimeout(() => {
-        setErrorMessage('')
+        setMessage(null)
       },5000)
     }
   }
@@ -65,6 +65,10 @@ const App = () => {
       setTitle('')
       setAuthor('')
       setUrl('')
+      setMessage({text: `a new blog ${returned.title} by ${returned.author} has been added`, type: 'info'})
+      setTimeout(() => {
+        setMessage(null)
+      },5000)
     })
   }
 
@@ -93,7 +97,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to see the blog list</h2>
-        <Notification message={errorMessage}/>
+        <Notification message={message} />
         <form onSubmit={handleLogin}>
           <div>
             <label>
@@ -115,6 +119,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={message}/>
       <div>
         <div>
           <span>{user.name} logged in</span>

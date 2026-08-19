@@ -1,0 +1,90 @@
+{
+  "notes": [
+    {
+      "id": "1",
+      "content": "HTML is easy",
+      "important": true
+    },
+    {
+      "id": "2",
+      "content": "Browser can execute only JavaScript",
+      "important": false
+    },
+    {
+      "id": "3",
+      "content": "HTML is easy",
+      "important": false
+    },
+    {
+      "id": "QBnTI9hDsHg",
+      "content": "HTML is easy",
+      "important": false
+    },
+    {
+      "content": "new note...ddd",
+      "important": false,
+      "id": "DUptAOVAJZU"
+    },
+    {
+      "content": "new note...ddd",
+      "important": true,
+      "id": "OSoXGnCn-9k"
+    },
+    {
+      "content": "dadasda",
+      "important": false,
+      "id": "bxuNKA9Ppxo"
+    },
+    {
+      "content": "dadsas",
+      "important": true,
+      "id": "nmtGoyQtvIg"
+    },
+    {
+      "id": "Fi1HX3QqGGE",
+      "content": "HTML is easy",
+      "important": false
+    },
+    {
+      "content": "dsaasdasfdf",
+      "important": false,
+      "id": "9jVc6-f_elo"
+    },
+    {
+      "content": "das",
+      "important": false,
+      "id": "bHXnl49QQQc"
+    },
+    {
+      "id": "PkGTkgAXjJg",
+      "content": "HTML is easy",
+      "important": false
+    },
+    {
+      "content": "fdfs",
+      "important": true,
+      "id": "C682zczYw7E"
+    },
+    {
+      "id": "k1w50obaztg",
+      "content": "HTML is easy",
+      "important": false
+    },
+    {
+      "content": "new note...",
+      "important": false,
+      "id": "mwjTFKfoAkQ"
+    },
+    {
+      "content": "new note...",
+      "important": true,
+      "id": "RsaQgO-a_gU"
+    },
+    {
+      "content": "new note...",
+      "important": false,
+      "id": "J3ZOrCwgyX8"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

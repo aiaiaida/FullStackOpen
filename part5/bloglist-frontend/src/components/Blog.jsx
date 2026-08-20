@@ -33,6 +33,7 @@ const Blog = ({ blog, updateBlog }) => {
           <div>likes {blog.likes}
             <button onClick={handleLike}>like</button>
           </div>
+          {/* author is displayed normally, nothing is wrong */}
           <div>{blog.author}</div>
         </div>
       )}

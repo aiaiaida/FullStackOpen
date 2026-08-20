@@ -49,13 +49,12 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   return response.status(404).json({ error: 'blog not found' })
 }
 
-  if (blog.user.toString() === user._id.toString()){
+  if (blog.user && blog.user.toString() === user._id.toString()){
     await Blog.findByIdAndDelete(blogId)
     response.status(204).end()
   } else {
     return response.status(401).json({ error: 'only the creator can delete this blog' })
   }
-  
 })
 
 // update a blog

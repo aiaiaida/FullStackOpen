@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, removeBlog }) => {
   const [detailVisible, setDetailVisible] = useState(false)
   const blogStyle = {
     paddingTop: 10,
@@ -13,6 +13,10 @@ const Blog = ({ blog, updateBlog }) => {
   const handleLike = async () => {
     const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user?.id || blog.user}
     await updateBlog(updatedBlog)
+  }
+
+  const handleRemoval = async () => {
+    await removeBlog(blog)
   }
 
   return (
@@ -33,8 +37,8 @@ const Blog = ({ blog, updateBlog }) => {
           <div>likes {blog.likes}
             <button onClick={handleLike}>like</button>
           </div>
-          {/* author is displayed normally, nothing is wrong */}
           <div>{blog.author}</div>
+          <button onClick={handleRemoval}>remove</button>
         </div>
       )}
     </div>

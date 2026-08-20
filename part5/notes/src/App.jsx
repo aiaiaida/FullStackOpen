@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Note from './Components/Note'
 import noteService from './services/notes'
 import Notification from './Components/Notification'
 import loginService from './services/login'
+import LoginForm from './Components/LoginForm'
+import NoteForm from './Components/NoteForm'
+import Togglable from './Components/Togglable'
 
 const App = () => {
 
   const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('new note...')
   const [showAll, setShowAll] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   
   useEffect(() => {
@@ -34,22 +34,6 @@ const App = () => {
       noteService.setToken(user.token)
     }
   }, [])
-  
-  const addNote = (event) => {
-    event.preventDefault()
-    console.log("button clicked", event.target)
-    const newNoteObject = {
-      content: newNote,
-      important: Math.random() < 0.5
-    }
-    noteService
-      .create(newNoteObject)
-      .then(returnedNote => {
-        setNotes(notes.concat(returnedNote))
-        setNewNote('')
-      })
-  }
-
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important)
 
@@ -68,10 +52,9 @@ const App = () => {
         })
   }
   
-  const handleLogin = async event => {
-    event.preventDefault()
+  const handleLogin = async credentials => {
     try {
-      const user = await loginService.login( {username, password })
+      const user = await loginService.login(credentials)
 
       window.localStorage.setItem(
         'loggedNoteappUser', JSON.stringify(user)
@@ -79,8 +62,6 @@ const App = () => {
 
       noteService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
     } catch {
       setErrorMessage('wrong credentials')
       setTimeout(() => {
@@ -90,35 +71,32 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label>
-          username
-            <input type='text' value={username} onChange={({ target }) => setUsername(target.value)} />
-          </label>
-      </div>
-      <div>
-        <label>
-          password
-            <input type='text' value={password} onChange={({ target }) => setPassword(target.value)} />
-        </label>
-      </div>
-      <button type='submit'>login</button>
-    </form>
+    <Togglable buttonLabel="login">
+      <LoginForm handleSubmit={handleLogin} />
+    </Togglable>
   )
 
+  const noteFormRef = useRef()
+
+  const addNote = (noteObject) => {
+    noteFormRef.current.toggleVisibility()
+    noteService
+      .create(noteObject)
+      .then(returnedNote => {
+        setNotes(notes.concat(returnedNote))
+      })
+  }
   const noteForm = () => (
-    <form onSubmit={addNote}>
-      <input value={newNote} onChange={(event) => setNewNote(event.target.value)}/>
-      <button type='submit'>save</button>
-    </form>
+    <Togglable buttonLabel="new note" ref={noteFormRef}>
+      <NoteForm createNote={addNote}/> 
+    </Togglable>
   )
+  
 
   return (
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage}/>
-      
       {!user && loginForm()}
       {user && (
         <div>
@@ -126,7 +104,6 @@ const App = () => {
           {noteForm()}
         </div>
       )}
-
       <div>
         <button onClick={() => setShowAll(!showAll)}>show {showAll ? 'important' : 'all'}</button>
       </div>

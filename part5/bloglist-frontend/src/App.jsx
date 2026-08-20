@@ -106,6 +106,8 @@ const App = () => {
     setBlogs(blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog))
   }
 
+  const sortedBlogs = [...blogs].sort((blog1, blog2) => blog2.likes - blog1.likes)
+
   return (
     <div>
       <h2>blogs</h2>
@@ -116,7 +118,7 @@ const App = () => {
           <button onClick={handleLogOut}>Log out</button>
         </div>
         {blogForm()}
-        {blogs.map(blog => <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />)}
+        {sortedBlogs.map(blog => <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />)}
       </div>
     </div>
   )

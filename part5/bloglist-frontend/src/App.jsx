@@ -52,7 +52,6 @@ const App = () => {
   }
 
   const addBlog = ( newBlogObject ) => {
-
     blogService.create(newBlogObject).then(returned => {
       setBlogs(blogs.concat(returned))
       setMessage({text: `a new blog ${returned.title} by ${returned.author} has been added`, type: 'info'})
@@ -102,6 +101,11 @@ const App = () => {
       </div>
   )}
 
+  const updateBlog = async (updatedBlog) => {
+    const returnedBlog = await blogService.updateBlog(updatedBlog.id, updatedBlog)
+    setBlogs(blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog))
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -112,7 +116,7 @@ const App = () => {
           <button onClick={handleLogOut}>Log out</button>
         </div>
         {blogForm()}
-        {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+        {blogs.map(blog => <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />)}
       </div>
     </div>
   )

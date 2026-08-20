@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Blog = ({ blog, updateBlog, removeBlog }) => {
+const Blog = ({ blog, updateBlog, removeBlog, userId }) => {
   const [detailVisible, setDetailVisible] = useState(false)
   const blogStyle = {
     paddingTop: 10,
@@ -19,6 +19,7 @@ const Blog = ({ blog, updateBlog, removeBlog }) => {
     await removeBlog(blog)
   }
 
+  const blogUserId = blog.user?.id || blog.user
   return (
     <div style={blogStyle}>
       {!detailVisible && (
@@ -38,7 +39,9 @@ const Blog = ({ blog, updateBlog, removeBlog }) => {
             <button onClick={handleLike}>like</button>
           </div>
           <div>{blog.author}</div>
-          <button onClick={handleRemoval}>remove</button>
+          {userId === blogUserId && (
+            <button onClick={handleRemoval}>remove</button>
+          )}
         </div>
       )}
     </div>

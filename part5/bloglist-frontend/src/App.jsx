@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,6 +14,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -72,26 +74,30 @@ const App = () => {
     })
   }
 
-  const blogForm = () => (
-    <form onSubmit={addBlog}>
+  const blogForm = () => {
+    const hideWhenVisible = {display: blogFormVisible ? 'none' : ''}
+    const showWhenVisible = {display: blogFormVisible ? '' : 'none'}
+
+    return (
       <div>
-        <label> title:
-          <input value={title} onChange={(event) => setTitle(event.target.value)}/>
-        </label>
+        <div style={hideWhenVisible}>
+          <button onClick={()=> {setBlogFormVisible(true)}}>create a new blog</button>
+        </div>
+        <div style={showWhenVisible}>
+          <BlogForm 
+            addBlog={addBlog}
+            title={title}
+            author={author}
+            url={url}
+            handleTitleChange={({ target }) => setTitle(target.value)}
+            handleAuthorChange={({ target }) => setAuthor(target.value)}
+            handleUrlChange={({ target }) => setUrl(target.value)}
+          />
+          <button onClick={() => setBlogFormVisible(false)}>cancel</button>
+        </div>
       </div>
-      <div>
-        <label> author:
-          <input value={author} onChange={(event) => setAuthor(event.target.value)}/>
-        </label>
-      </div>
-      <div>
-        <label> url:
-          <input value={url} onChange={(event) => setUrl(event.target.value)}/>
-        </label>
-      </div>
-      <button type='submit'>create</button>
-    </form>
-  )
+    )
+  } 
 
   if (user === null) {
     return (

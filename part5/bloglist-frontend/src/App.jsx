@@ -16,7 +16,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const App = () => {
       setPassword('')
       setUsername('')
     } catch {
-      setMessage({text:'wrong credentials', type: 'error'})
+      setMessage({ text:'wrong credentials', type: 'error' })
       setTimeout(() => {
         setMessage(null)
       },5000)
@@ -54,7 +54,7 @@ const App = () => {
   const addBlog = ( newBlogObject ) => {
     blogService.create(newBlogObject).then(returned => {
       setBlogs(blogs.concat(returned))
-      setMessage({text: `a new blog ${returned.title} by ${returned.author} has been added`, type: 'info'})
+      setMessage({ text: `a new blog ${returned.title} by ${returned.author} has been added`, type: 'info' })
       setTimeout(() => {
         setMessage(null)
       },5000)
@@ -62,13 +62,13 @@ const App = () => {
   }
 
   const blogForm = () => {
-    const hideWhenVisible = {display: blogFormVisible ? 'none' : ''}
-    const showWhenVisible = {display: blogFormVisible ? '' : 'none'}
+    const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
+    const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
 
     return (
       <div>
         <div style={hideWhenVisible}>
-          <button onClick={()=> {setBlogFormVisible(true)}}>create a new blog</button>
+          <button onClick={() => {setBlogFormVisible(true)}}>create a new blog</button>
         </div>
         <div style={showWhenVisible}>
           <BlogForm addBlog={addBlog} />
@@ -76,7 +76,7 @@ const App = () => {
         </div>
       </div>
     )
-  } 
+  }
 
   if (user === null) {
     return (
@@ -87,19 +87,19 @@ const App = () => {
           <div>
             <label>
               username
-                <input type='text' value={username} onChange={({ target }) => setUsername(target.value)} />
-              </label>
+              <input type='text' value={username} onChange={({ target }) => setUsername(target.value)} />
+            </label>
           </div>
           <div>
             <label>
               password
-                <input type='text' value={password} onChange={({ target }) => setPassword(target.value)} />
+              <input type='text' value={password} onChange={({ target }) => setPassword(target.value)} />
             </label>
           </div>
           <button type='submit'>login</button>
         </form>
       </div>
-  )}
+    )}
 
   const updateBlog = async (updatedBlog) => {
     const returnedBlog = await blogService.updateBlog(updatedBlog.id, updatedBlog)

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const Blog = ({ blog, updateBlog, removeBlog, userId }) => {
   const [detailVisible, setDetailVisible] = useState(false)
@@ -11,7 +11,7 @@ const Blog = ({ blog, updateBlog, removeBlog, userId }) => {
   }
 
   const handleLike = async () => {
-    const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user?.id || blog.user}
+    const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user?.id || blog.user }
     await updateBlog(updatedBlog)
   }
 
@@ -25,7 +25,7 @@ const Blog = ({ blog, updateBlog, removeBlog, userId }) => {
       {!detailVisible && (
         <div>
           {blog.title} {blog.author}
-          <button onClick={() => setDetailVisible(!detailVisible)}>view</button> 
+          <button onClick={() => setDetailVisible(!detailVisible)}>view</button>
         </div>
       )}
       {detailVisible && (

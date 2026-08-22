@@ -5,9 +5,9 @@ import Blog from './Blog'
 
 test('shows only title and author by default', () => {
   const blog = {
-    title: "a test blog",
-    author: "me",
-    url: "https:...",
+    title: 'a test blog',
+    author: 'me',
+    url: 'https:...',
     likes: 10
   }
 
@@ -28,9 +28,9 @@ test('shows only title and author by default', () => {
 
 test('url and likes shown when view button clicked', async () => {
   const blog = {
-    title: "a test blog",
-    author: "me",
-    url: "https:...",
+    title: 'a test blog',
+    author: 'me',
+    url: 'https:...',
     likes: 10
   }
 
@@ -50,19 +50,19 @@ test('url and likes shown when view button clicked', async () => {
 
 test('like button clicked twice and event called twice', async () => {
   const blog = {
-    title: "a test blog",
-    author: "me",
-    url: "https:...",
+    title: 'a test blog',
+    author: 'me',
+    url: 'https:...',
     likes: 10
   }
   const likeHandler = vi.fn()
-  
+
   render(<Blog blog={blog} updateBlog={likeHandler}/>)
 
   const user = userEvent.setup()
 
   await user.click(screen.getByText('view'))
-  
+
   const button = screen.getByText('like')
   await user.click(button)
   await user.click(button)

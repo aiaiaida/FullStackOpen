@@ -4,6 +4,9 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
+import { Routes, Route, Link, useNavigate } from 'react-router-dom'
+import BlogList from './components/BlogList'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,7 +14,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [blogFormVisible, setBlogFormVisible] = useState(false)
+  // const [blogFormVisible, setBlogFormVisible] = useState(false)
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -37,6 +42,7 @@ const App = () => {
       setUser(user)
       setPassword('')
       setUsername('')
+      navigate('/')
     } catch {
       setMessage({ text:'wrong credentials', type: 'error' })
       setTimeout(() => {
@@ -51,55 +57,32 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = ( newBlogObject ) => {
-    blogService.create(newBlogObject).then(returned => {
-      setBlogs(blogs.concat(returned))
-      setMessage({ text: `a new blog ${returned.title} by ${returned.author} has been added`, type: 'info' })
-      setTimeout(() => {
-        setMessage(null)
-      },5000)
-    })
-  }
+  // const addBlog = ( newBlogObject ) => {
+  //   blogService.create(newBlogObject).then(returned => {
+  //     setBlogs(blogs.concat(returned))
+  //     setMessage({ text: `a new blog ${returned.title} by ${returned.author} has been added`, type: 'info' })
+  //     setTimeout(() => {
+  //       setMessage(null)
+  //     },5000)
+  //   })
+  // }
 
-  const blogForm = () => {
-    const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
-    const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
+  // const blogForm = () => {
+  //   const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
+  //   const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
 
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => {setBlogFormVisible(true)}}>create a new blog</button>
-        </div>
-        <div style={showWhenVisible}>
-          <BlogForm addBlog={addBlog} />
-          <button onClick={() => setBlogFormVisible(false)}>cancel</button>
-        </div>
-      </div>
-    )
-  }
-
-  if (user === null) {
-    return (
-      <div>
-        <h2>Log in to see the blog list</h2>
-        <Notification message={message} />
-        <form onSubmit={handleLogin}>
-          <div>
-            <label>
-              username
-              <input type='text' value={username} onChange={({ target }) => setUsername(target.value)} />
-            </label>
-          </div>
-          <div>
-            <label>
-              password
-              <input type='text' value={password} onChange={({ target }) => setPassword(target.value)} />
-            </label>
-          </div>
-          <button type='submit'>login</button>
-        </form>
-      </div>
-    )}
+  //   return (
+  //     <div>
+  //       <div style={hideWhenVisible}>
+  //         <button onClick={() => {setBlogFormVisible(true)}}>create a new blog</button>
+  //       </div>
+  //       <div style={showWhenVisible}>
+  //         <BlogForm addBlog={addBlog} />
+  //         <button onClick={() => setBlogFormVisible(false)}>cancel</button>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   const updateBlog = async (updatedBlog) => {
     const returnedBlog = await blogService.updateBlog(updatedBlog.id, updatedBlog)
@@ -112,20 +95,22 @@ const App = () => {
       setBlogs(blogs.filter(b => b.id !== blog.id))
     }
   }
-
-  const sortedBlogs = [...blogs].sort((blog1, blog2) => blog2.likes - blog1.likes)
-
+  const padding = {
+    padding: 5
+  }
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification message={message}/>
       <div>
-        <div>
-          <span>{user.name} logged in</span>
-          <button onClick={handleLogOut}>Log out</button>
-        </div>
-        {blogForm()}
-        {sortedBlogs.map(blog => <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog} userId={user.id}/>)}
+        <Link style={padding} to='/'>blogs</Link>
+        {!user && <Link style={padding} to='/login'>login</Link>}
+        {user && <button onClick={handleLogOut}>Log out</button>}
+        <Notification message={message}/>
+      </div>
+      <div>
+        <Routes>
+          <Route path="/" element={<BlogList blogs={blogs} user={user} updateBlog={updateBlog} removeBlog={removeBlog}/>} />
+          <Route path="/login" element={<LoginForm username={username} password={password} setUsername={setUsername} setPassword={setPassword} handleLogin={handleLogin}/>} />
+        </Routes>
       </div>
     </div>
   )

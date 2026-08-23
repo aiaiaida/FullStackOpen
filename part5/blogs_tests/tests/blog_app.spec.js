@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const { loginWith } = require('./helper')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -42,17 +42,24 @@ describe('Blog app', () => {
     })
 
     test('a new blog can be created', async ({ page }) => {
-      await page.getByRole('button', { name: 'create a new blog' }).click()
-      await page.getByLabel('title').fill('a note by playwright')
-      await page.getByLabel('author').fill('playwright')
-      await page.getByLabel('url').fill('http:playwright')
-      await page.getByRole('button', { name: 'create' }).click()
+      await createBlog(page, 'a note by playwright', 'playwright', 'http:playwright')
 
       const infoDiv = page.locator('.info')
       await expect(infoDiv).toContainText('a note by playwright')
 
       const blog = page.getByRole('button', { name: 'view' }).locator('..')
       await expect(blog).toContainText('a note by playwright')
+    })
+
+    test('a not can be liked', async ({ page }) => {
+      await createBlog(page, 'a note by playwright', 'playwright', 'http:playwright')
+
+      await page.getByRole('button', { name: 'view' }).click()
+      const likeRow = page.getByRole('button', { name: 'like' }).locator('..')
+      await expect(likeRow).toContainText('likes 0')
+      
+      await page.getByRole('button', { name: 'like' }).click()
+      await expect(likeRow).toContainText('likes 1')
     })
   })
 })

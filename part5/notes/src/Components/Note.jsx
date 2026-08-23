@@ -1,7 +1,25 @@
 import React from 'react'
-const Note = ({ note, toggleImportance }) => {
+import { useNavigate, useParams } from 'react-router-dom'
+const Note = ({ note, toggleImportance, deleteNote }) => {
+  const id = useParams().id
+  const navigate = useNavigate()
+  if (!note) {
+    return <p>Loading note...</p>
+  }
   const label = note.important ? 'make not important':'make important'
-  return <li className="note"><span>{note.content}</span> <button onClick={toggleImportance}>{label}</button></li>
+
+  const handleDelete = () => {
+    if (window.confirm(`Delete note "${note.content}"?`)) {
+      deleteNote(id)
+      navigate('/notes')
+    }
+  }
+  return (
+    <li className="note">
+      <span>{note.content}</span>
+      <button onClick={() => {toggleImportance(id)}}>{label}</button>
+      <button onClick={() => {handleDelete()}}>delete</button>
+    </li>)
 }
 
 export default Note

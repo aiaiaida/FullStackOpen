@@ -6,6 +6,7 @@ import loginService from './services/login'
 import LoginForm from './Components/LoginForm'
 import NoteForm from './Components/NoteForm'
 import Togglable from './Components/Togglable'
+import Footer from './Components/Footer'
 
 const App = () => {
 
@@ -109,6 +110,7 @@ const App = () => {
           <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)}/>
         )}
       </ul>
+      <Footer />
     </div>
   )
 }

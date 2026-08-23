@@ -11,6 +11,13 @@ describe('Blog app', () => {
         password: 'salainen'
       }
     })
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'matti',
+        username: 'matti',
+        password: 'salainen'
+      }
+    })
     await page.goto('http://localhost:5173/')
   })
 
@@ -70,10 +77,22 @@ describe('Blog app', () => {
         expect(dialog.type()).toBe('confirm')
         expect(dialog.message()).toContain('a note by playwright again')
         await dialog.accept()
-  })
+        })
       const blog = page.getByRole('button', { name: 'remove' }).locator('..')
       await page.getByRole('button', { name: 'remove' }).click()
       await expect(blog).not.toBeVisible()
+    })
+    test('blog created by aada cannot be seen by matti', async ({ page }) => {
+      await createBlog(page, 'a blog by playwright aada', 'playwright-aada', 'http:playwright')
+      await page.getByRole('button', { name:'Log out' }).click()
+      await loginWith(page, 'matti', 'salainen')
+      await expect(page.getByText('matti logged in')).toBeVisible()
+
+      const blog = page.getByRole('button', { name: 'view' }).locator('..').filter({ hasText: 'a blog by playwright aada' })
+      await blog.getByRole('button',{ name: 'view' }).click()
+
+      await expect(blog.getByRole('button', { name: 'remove' })).not.toBeVisible()
+
     })
   })
 })

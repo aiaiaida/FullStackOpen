@@ -82,7 +82,7 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'remove' }).click()
       await expect(blog).not.toBeVisible()
     })
-    test('blog created by aada cannot be seen by matti', async ({ page }) => {
+    test('blog created by aada cannot be removed by matti', async ({ page }) => {
       await createBlog(page, 'a blog by playwright aada', 'playwright-aada', 'http:playwright')
       await page.getByRole('button', { name:'Log out' }).click()
       await loginWith(page, 'matti', 'salainen')
@@ -92,7 +92,19 @@ describe('Blog app', () => {
       await blog.getByRole('button',{ name: 'view' }).click()
 
       await expect(blog.getByRole('button', { name: 'remove' })).not.toBeVisible()
+    })
 
+    test('blogs are arranged in most liked order', async ({ page }) => {
+      await createBlog(page, 'second', 'playwright-aada', 'http:playwright')
+      await createBlog(page, 'most liked', 'playwright-aada', 'http:playwright')
+
+      const most_liked = page.getByTestId('blog').filter({ hasText:'most liked' })
+      await most_liked.getByRole('button', { name:'view' }).click()
+      await most_liked.getByRole('button', { name:'like' }).click()
+
+      const blogs = page.getByTestId('blog')
+      await expect(blogs.nth(0)).toContainText('most liked')
+      await expect(blogs.nth(1)).toContainText('second')
     })
   })
 })

@@ -22,7 +22,7 @@ const Blog = ({ blog, updateBlog, removeBlog, userId }) => {
 
   const blogUserId = blog.user?.id || blog.user
   return (
-    <div style={blogStyle}>
+    <div data-testid="blog" style={blogStyle}>
       {!detailVisible && (
         <div>
           {blog.title} {blog.author}

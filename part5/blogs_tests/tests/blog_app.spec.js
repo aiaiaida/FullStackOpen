@@ -51,7 +51,7 @@ describe('Blog app', () => {
       await expect(blog).toContainText('a note by playwright')
     })
 
-    test('a not can be liked', async ({ page }) => {
+    test('a blog can be liked', async ({ page }) => {
       await createBlog(page, 'a note by playwright', 'playwright', 'http:playwright')
 
       await page.getByRole('button', { name: 'view' }).click()
@@ -60,6 +60,20 @@ describe('Blog app', () => {
       
       await page.getByRole('button', { name: 'like' }).click()
       await expect(likeRow).toContainText('likes 1')
+    })
+
+    test('a blog can be deleted by the user who added it', async ({ page }) => {
+      await createBlog(page, 'a note by playwright again', 'playwright', 'http:playwright')
+      await page.getByRole('button', { name: 'view' }).click()
+
+      page.once('dialog', async dialog => {
+        expect(dialog.type()).toBe('confirm')
+        expect(dialog.message()).toContain('a note by playwright again')
+        await dialog.accept()
+  })
+      const blog = page.getByRole('button', { name: 'remove' }).locator('..')
+      await page.getByRole('button', { name: 'remove' }).click()
+      await expect(blog).not.toBeVisible()
     })
   })
 })

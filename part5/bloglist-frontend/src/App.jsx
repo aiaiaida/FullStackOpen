@@ -5,7 +5,7 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
-import { Routes, Route, Link, useNavigate } from 'react-router-dom'
+import { Routes, Route, Link, useNavigate, useMatch } from 'react-router-dom'
 import BlogList from './components/BlogList'
 
 const App = () => {
@@ -55,6 +55,7 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
     blogService.setToken('')
     setUser(null)
+    navigate('/')
   }
 
   // const addBlog = ( newBlogObject ) => {
@@ -95,6 +96,9 @@ const App = () => {
       setBlogs(blogs.filter(b => b.id !== blog.id))
     }
   }
+
+  const blogMatch = useMatch('/blogs/:id')
+  const blog = blogMatch ? blogs.find(blog => blog.id === blogMatch.params.id) : null
   const padding = {
     padding: 5
   }
@@ -108,8 +112,9 @@ const App = () => {
       </div>
       <div>
         <Routes>
-          <Route path="/" element={<BlogList blogs={blogs} user={user} updateBlog={updateBlog} removeBlog={removeBlog}/>} />
+          <Route path="/" element={<BlogList blogs={blogs}/>} />
           <Route path="/login" element={<LoginForm username={username} password={password} setUsername={setUsername} setPassword={setPassword} handleLogin={handleLogin}/>} />
+          <Route path="blogs/:id" element={<Blog blog={blog} updateBlog={updateBlog} removeBlog={removeBlog} userId={user?.id} />}/>
         </Routes>
       </div>
     </div>

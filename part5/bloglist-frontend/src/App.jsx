@@ -7,6 +7,7 @@ import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import { Routes, Route, Link, useNavigate, useMatch } from 'react-router-dom'
 import BlogList from './components/BlogList'
+import { AppBar, Button, Toolbar, Box } from '@mui/material'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -78,24 +79,35 @@ const App = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`) ){
       await blogService.removeBlog(blog.id)
       setBlogs(blogs.filter(b => b.id !== blog.id))
+      setMessage({ text: `the blog ${blog.title} by ${blog.author} has been deleted`, type: 'info' })
       navigate('/')
+      setTimeout(() => {
+        setMessage(null)
+      },5000)
     }
   }
 
   const blogMatch = useMatch('/blogs/:id')
   const blog = blogMatch ? blogs.find(blog => blog.id === blogMatch.params.id) : null
-  const padding = {
-    padding: 5
-  }
+  // const padding = {
+  //   padding: 5
+  // }
+
+  const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
   return (
     <div>
-      <div>
-        <Link style={padding} to='/'>blogs</Link>
-        {user && <Link style={padding} to='/create'>new blog</Link>}
-        {!user && <Link style={padding} to='/login'>login</Link>}
-        {user && <button onClick={handleLogOut}>Log out</button>}
-        <Notification message={message}/>
-      </div>
+      <AppBar position='static'>
+        <Toolbar>
+          <div>Blog App</div>
+          <Box sx={{ ml: 'auto' }}>
+            <Button color="inherit" component={Link} to="/" sx={style}>Blogs</Button>
+            {user && <Button color="inherit" component={Link} to='/create' sx={style}>new blog</Button>}
+            {!user && <Button color="inherit" component={Link} to='/login' sx={style}>login</Button>}
+            {user && <Button variant="contained" onClick={handleLogOut} sx={style}>Log out</Button>}
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Notification message={message}/>
       <div>
         <Routes>
           <Route path="/" element={<BlogList blogs={blogs}/>} />

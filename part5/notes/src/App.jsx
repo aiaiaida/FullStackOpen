@@ -1,15 +1,20 @@
+// import { AppBar, Container, Toolbar, Button } from '@mui/material'
 import { useState, useEffect } from 'react'
 import NoteList from './Components/NoteList'
 import noteService from './services/notes'
 import NoteForm from './Components/NoteForm'
 import Note from './Components/Note'
-import Footer from './Components/Footer'
+// import Footer from './Components/Footer'
 import Home from './Components/Home'
+import Notification from './Components/Notification'
 import { useMatch, BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Page, Navigation, Footer } from './styles/styledComponents'
 
 const App = () => {
 
   const [notes, setNotes] = useState([])
+  const [notification, setNotification] = useState(null)
+
   const match = useMatch('/notes/:id')
   const note = match ? notes.find(n => n.id === match.params.id) : null
 
@@ -24,6 +29,10 @@ const App = () => {
       .create(noteObject)
       .then(returnedNote => {
         setNotes(notes.concat(returnedNote))
+        setNotification({ text: `Note '${returnedNote.content}' added!`, type: 'success' })
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
       })
   }
 
@@ -50,18 +59,16 @@ const App = () => {
       })
   }
 
-  const padding = {
-    padding: 5
-  }
+  // const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
+  const padding = { padding: 5 }
 
   return (
-    <div>
-      <div>
-        <Link style={padding} to='/'>home</Link>
-        <Link style={padding} to='/notes'>notes</Link>
-        <Link style={padding} to='/create'>new note</Link>
-      </div>
-
+    <Page>
+      <Navigation>
+        <Link to='/' style={padding}>home</Link>
+        <Link to='/notes' style={padding}>notes</Link>
+        <Link to='/create' style={padding}>new note</Link>
+      </Navigation>
       <Routes>
         < Route path="/notes/:id" element={
           <Note note={note} toggleImportance={toggleImportanceOf} deleteNote={deleteNote}/> }/>
@@ -73,8 +80,36 @@ const App = () => {
         }/>
         <Route path="/" element={<Home />} />
       </Routes>
-      <Footer />
-    </div>
+      <Footer>
+        Note app, Department of Computer Science, University of Helsinki 2026
+      </Footer>
+    </Page>
+
+
+  // <Container>
+  //   <AppBar position='static'>
+  //     <Toolbar>
+  //       <Button color='inherit' component={Link} to='/' sx={style}>home</Button>
+  //       <Button color='inherit' component={Link} to='/notes' sx={style}>notes</Button>
+  //       <Button color='inherit' component={Link} to='/create' sx={style}>new note</Button>
+  //     </Toolbar>
+  //   </AppBar>
+
+  //   <Notification notification={notification} />
+
+  //   <Routes>
+  //     < Route path="/notes/:id" element={
+  //       <Note note={note} toggleImportance={toggleImportanceOf} deleteNote={deleteNote}/> }/>
+  //     <Route path="/notes" element={
+  //       <NoteList notes={notes}/>
+  //     }/>
+  //     <Route path="/create" element={
+  //       <NoteForm createNote={addNote} />
+  //     }/>
+  //     <Route path="/" element={<Home />} />
+  //   </Routes>
+  //   <Footer />
+  // </Container>
   )
 }
 

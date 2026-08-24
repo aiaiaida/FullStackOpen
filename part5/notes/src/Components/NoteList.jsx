@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
 import { Link } from 'react-router-dom'
 import Note from './Note'
 import noteService from '../services/notes'
-import Notification from './Notification'
 import loginService from '../services/login'
 import LoginForm from './LoginForm'
 import NoteForm from './NoteForm'
@@ -11,10 +11,9 @@ import Togglable from './Togglable'
 const NoteList = ({ notes }) => {
 
   const [showAll, setShowAll] = useState(true)
-  const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
 
-  const noteFormRef = useRef()
+  // const noteFormRef = useRef()
   // useEffect(() => {
   //   const ghostNote = {
   //     id:10000,
@@ -45,10 +44,10 @@ const NoteList = ({ notes }) => {
       noteService.setToken(user.token)
       setUser(user)
     } catch {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      // setErrorMessage('wrong credentials')
+      // setTimeout(() => {
+      //   setErrorMessage(null)
+      // }, 5000)
     }
   }
 
@@ -63,20 +62,33 @@ const NoteList = ({ notes }) => {
 
   return (
     <div>
-      <h1>Notes</h1>
-      <Notification message={errorMessage}/>
       {!user && loginForm()}
-      <div>
+      <h2>Notes</h2>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>content</TableCell>
+              <TableCell>user</TableCell>
+              <TableCell>important</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {notesToShow.map(note => (
+              <TableRow key={note.id}>
+                <TableCell>
+                  <Link to={`/notes/${note.id}`}>{note.content}</Link>
+                </TableCell>
+                <TableCell>{note.user?.name ?? 'unknown user'}</TableCell>
+                <TableCell>{note.important ? 'yes' : ''}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {/* <div>
         <button onClick={() => setShowAll(!showAll)}>show {showAll ? 'important' : 'all'}</button>
-      </div>
-      <ul>
-        {notesToShow.map(note => (
-          <li>
-            <Link to={`/notes/${note.id}`}>{note.content}</Link>
-          </li>
-        )
-        )}
-      </ul>
+      </div> */}
     </div>
   )
 }

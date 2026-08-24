@@ -28,7 +28,7 @@ const Blog = ({ blog, updateBlog, removeBlog, userId }) => {
           {userId && (<button onClick={handleLike}>like</button>)}
         </div>
         <div>added by {blog.author}</div>
-        {userId === blogUserId && (
+        {Boolean(userId) && userId.toString() === blogUserId?.toString() && (
           <button onClick={handleRemoval}>remove</button>
         )}
       </div>

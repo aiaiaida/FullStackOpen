@@ -14,7 +14,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  // const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   const navigate = useNavigate()
 
@@ -58,32 +57,17 @@ const App = () => {
     navigate('/')
   }
 
-  // const addBlog = ( newBlogObject ) => {
-  //   blogService.create(newBlogObject).then(returned => {
-  //     setBlogs(blogs.concat(returned))
-  //     setMessage({ text: `a new blog ${returned.title} by ${returned.author} has been added`, type: 'info' })
-  //     setTimeout(() => {
-  //       setMessage(null)
-  //     },5000)
-  //   })
-  // }
+  const addBlog = ( newBlogObject ) => {
+    blogService.create(newBlogObject).then(returned => {
+      setBlogs(blogs.concat(returned))
+      setMessage({ text: `a new blog ${returned.title} by ${returned.author} has been added`, type: 'info' })
+      setTimeout(() => {
+        setMessage(null)
+      },5000)
+    })
+    navigate('/')
+  }
 
-  // const blogForm = () => {
-  //   const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
-  //   const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
-
-  //   return (
-  //     <div>
-  //       <div style={hideWhenVisible}>
-  //         <button onClick={() => {setBlogFormVisible(true)}}>create a new blog</button>
-  //       </div>
-  //       <div style={showWhenVisible}>
-  //         <BlogForm addBlog={addBlog} />
-  //         <button onClick={() => setBlogFormVisible(false)}>cancel</button>
-  //       </div>
-  //     </div>
-  //   )
-  // }
 
   const updateBlog = async (updatedBlog) => {
     const returnedBlog = await blogService.updateBlog(updatedBlog.id, updatedBlog)
@@ -94,6 +78,7 @@ const App = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`) ){
       await blogService.removeBlog(blog.id)
       setBlogs(blogs.filter(b => b.id !== blog.id))
+      navigate('/')
     }
   }
 
@@ -106,6 +91,7 @@ const App = () => {
     <div>
       <div>
         <Link style={padding} to='/'>blogs</Link>
+        {user && <Link style={padding} to='/create'>new blog</Link>}
         {!user && <Link style={padding} to='/login'>login</Link>}
         {user && <button onClick={handleLogOut}>Log out</button>}
         <Notification message={message}/>
@@ -115,6 +101,7 @@ const App = () => {
           <Route path="/" element={<BlogList blogs={blogs}/>} />
           <Route path="/login" element={<LoginForm username={username} password={password} setUsername={setUsername} setPassword={setPassword} handleLogin={handleLogin}/>} />
           <Route path="blogs/:id" element={blog ? <Blog blog={blog} updateBlog={updateBlog} removeBlog={removeBlog} userId={user?.id} /> : (<div>Loading ...</div>)}/>
+          <Route path="create" element={<BlogForm addBlog={addBlog}/>}/>
         </Routes>
       </div>
     </div>

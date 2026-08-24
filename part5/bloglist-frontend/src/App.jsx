@@ -61,11 +61,11 @@ const App = () => {
     blogService.create(newBlogObject).then(returned => {
       setBlogs(blogs.concat(returned))
       setMessage({ text: `a new blog ${returned.title} by ${returned.author} has been added`, type: 'info' })
+      navigate('/')
       setTimeout(() => {
         setMessage(null)
       },5000)
     })
-    navigate('/')
   }
 
 

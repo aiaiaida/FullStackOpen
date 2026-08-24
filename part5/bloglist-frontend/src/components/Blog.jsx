@@ -1,11 +1,9 @@
 import React from 'react'
+import { Button, Card, CardContent, Stack, Typography, Link } from '@mui/material'
 
 const Blog = ({ blog, updateBlog, removeBlog, userId }) => {
   const blogStyle = {
     paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
     marginBottom: 5
   }
 
@@ -21,17 +19,20 @@ const Blog = ({ blog, updateBlog, removeBlog, userId }) => {
   const blogUserId = blog.user?.id || blog.user
   return (
     <div data-testid="blog" style={blogStyle}>
-      <div>
-        <h2>{blog.title}</h2>
-        <div>{blog.url}</div>
-        <div>likes {blog.likes}
-          {userId && (<button onClick={handleLike}>like</button>)}
-        </div>
-        <div>added by {blog.author}</div>
-        {Boolean(userId) && userId.toString() === blogUserId?.toString() && (
-          <button onClick={handleRemoval}>remove</button>
-        )}
-      </div>
+      <Card sx={{ border: '1px solid', boxShadow: 2, borderColor: 'divider' }}>
+        <CardContent>
+          <Stack>
+            <h2>{blog.title}</h2>
+            <Link href={blog.url}>{blog.url}</Link>
+            <Typography sx={{ color: 'grey' }} >added by {blog.author}</Typography>
+          </Stack>
+          <Stack direction="row" spacing={2}>
+            <Typography sx={{ paddingTop:1 }}>likes {blog.likes}</Typography>
+            {userId && (<Button onClick={handleLike} sx={{ color: 'blue', border: 1, borderColor: 'blue', width:'100px' }}>like</Button>)}
+            {Boolean(userId) && userId.toString() === blogUserId?.toString() && (<Button onClick={handleRemoval} sx={{ color: 'red', border: 1, borderColor: 'red', width:'100px' }}>remove</Button>)}
+          </Stack>
+        </CardContent>
+      </Card>
     </div>
   )
 }

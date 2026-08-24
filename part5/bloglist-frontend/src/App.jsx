@@ -114,7 +114,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<BlogList blogs={blogs}/>} />
           <Route path="/login" element={<LoginForm username={username} password={password} setUsername={setUsername} setPassword={setPassword} handleLogin={handleLogin}/>} />
-          <Route path="blogs/:id" element={<Blog blog={blog} updateBlog={updateBlog} removeBlog={removeBlog} userId={user?.id} />}/>
+          <Route path="blogs/:id" element={blog ? <Blog blog={blog} updateBlog={updateBlog} removeBlog={removeBlog} userId={user?.id} /> : (<div>Loading ...</div>)}/>
         </Routes>
       </div>
     </div>

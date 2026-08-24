@@ -1,5 +1,4 @@
 import React from 'react'
-import { useState } from 'react'
 
 const Blog = ({ blog, updateBlog, removeBlog, userId }) => {
   const blogStyle = {
@@ -26,7 +25,7 @@ const Blog = ({ blog, updateBlog, removeBlog, userId }) => {
         <h2>{blog.title}</h2>
         <div>{blog.url}</div>
         <div>likes {blog.likes}
-          <button onClick={handleLike}>like</button>
+          {userId && (<button onClick={handleLike}>like</button>)}
         </div>
         <div>added by {blog.author}</div>
         {userId === blogUserId && (
